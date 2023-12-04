@@ -1,0 +1,125 @@
+<div class="game-bonus-container">
+  <mat-card>
+    <mat-card-content>
+      <p class="card-content-description">
+        Winamax propose très souvent une promotion qui consiste à miser un pari
+        de 10€ sur un match précis à une cote minimale de 2 pour recevoir un
+        freebet de 10€. Cet onglet permet d'optimiser cette offre.
+      </p>
+      <p class="card-content-description">
+        Avant de montrer un cas pratique, nous allons assumer pouvoir convertir
+        nos freebets à 80% et que les côtes au début d'un live vont drop de 10%.
+      </p>
+      <p class="card-content-description">
+        Cas pratique: pour le weekend du 12 novembre 2023, le match proposé
+        était Lazio - AS rome. Il suffit alors de vérifier: Si la plus-value
+        minimum est supérieure à 10 * 0.8 = 8€, alors cette promotion est
+        rentable et on peut répartir nos mises telles qu'elles sont décrites. Si
+        le match n'est pas listé vous pouvez quand même faire le calcul en
+        cochant la case "Match non répertorié"
+      </p>
+    </mat-card-content>
+  </mat-card>
+
+  <div class="container">
+    <ng-content
+      *ngIf="
+        bookmakersList.length > 0 && sportsList.length > 0;
+        then mainContent;
+        else noBookmaker
+      "
+    ></ng-content>
+    <ng-template #mainContent>
+      <div class="user-choices">
+        <mat-selection-list
+          #bookmakerSelectionList
+          [multiple]="false"
+          class="selection-list"
+        >
+          <mat-list-option
+            *ngFor="let bookmakerOption of bookmakersList"
+            [value]="bookmakerOption"
+          >
+            {{ bookmakerOption.label }}
+          </mat-list-option>
+        </mat-selection-list>
+        <form [formGroup]="form" class="user-choices-form">
+          <mat-form-field class="example-full-width">
+            <mat-label for="minBet">Min bet</mat-label>
+            <input
+              matInput
+              id="minBet"
+              placeholder="min bet"
+              type="number"
+              min="1"
+              max="100"
+              formControlName="minBet"
+            />
+          </mat-form-field>
+
+          <mat-form-field class="example-full-width">
+            <mat-label for="minOdd">Min odd</mat-label>
+            <input
+              matInput
+              id="minOdd"
+              placeholder="min odd"
+              type="number"
+              min="1"
+              max="20"
+              step="0.5"
+              formControlName="minOdd"
+            />
+          </mat-form-field>
+        </form>
+        <div class="sports-list-container">
+          <mat-selection-list
+            #sportsSelectionList
+            [multiple]="false"
+            class="selection-list"
+          >
+            <mat-list-option
+              *ngFor="let sportsOption of sportsList"
+              [value]="sportsOption"
+            >
+              {{ sportsOption.label }}
+            </mat-list-option>
+          </mat-selection-list>
+        </div>
+      </div>
+      <div *ngIf="games$ | async as gamesList">
+        <div class="user-choices">
+          <mat-form-field>
+            <input matInput #gameSearch placeholder="Search for a game" />
+          </mat-form-field>
+          <button
+            type="button"
+            mat-raised-button
+            color="primary"
+            [disabled]="form.invalid"
+            (click)="computeOptimalBets()"
+          >
+            Compute optimal bets
+          </button>
+        </div>
+        <mat-selection-list
+          #gamesSelectionList
+          (selectionChange)="onSelectedGameChange()"
+          [multiple]="false"
+          class="selection-list games-list"
+        >
+          <mat-list-option
+            *ngFor="
+              let gameOption of gamesList | gamesFilter : gameSearch.value
+            "
+            [value]="gameOption"
+          >
+            {{ gameOption.homeTeam }} - {{ gameOption.awayTeam }}
+          </mat-list-option>
+        </mat-selection-list>
+      </div>
+    </ng-template>
+    <ng-template #noBookmaker>
+      <app-fetch-odds-warning></app-fetch-odds-warning>
+    </ng-template>
+  </div>
+</div>

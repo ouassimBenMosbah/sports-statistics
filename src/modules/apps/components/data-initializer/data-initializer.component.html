@@ -1,0 +1,60 @@
+<div class="list-container">
+  <mat-selection-list
+    #sportsList
+    *ngIf="sportsOptions$ | async as sportsOptions"
+    [multiple]="false"
+    class="selection-list"
+  >
+    <mat-list-option
+      *ngFor="let sportsOption of sportsOptions"
+      [value]="sportsOption"
+    >
+      {{ sportsOption.label }}
+    </mat-list-option>
+  </mat-selection-list>
+  <button
+    mat-raised-button
+    color="primary"
+    (click)="fetchOdds()"
+    [disabled]="!sportsList?.selectedOptions?.selected?.length"
+  >
+    Fetch odds
+  </button>
+</div>
+
+<div *ngIf="events$ | async as eventsMetadata">
+  <h1>Games fetched</h1>
+  <div *ngFor="let eventGames of eventsMetadata.events | keyvalue" role="list">
+    <h2>
+      {{ eventGames.value.label }}
+    </h2>
+    <mat-list>
+      <div *ngFor="let gameId of eventGames.value.gamesIds">
+        <mat-list-item role="listitem">
+          <div matListItemTitle>
+            {{
+              eventsMetadata.games[gameId].date
+                | date : "shortDate" : undefined : "FR"
+            }}
+            | {{ eventsMetadata.games[gameId].homeTeam }} -
+            {{ eventsMetadata.games[gameId].awayTeam }}
+          </div>
+          <div
+            matListItemLine
+            *ngFor="let oddId of eventsMetadata.games[gameId].oddsIds"
+          >
+            {{
+              eventsMetadata.bookmakers[eventsMetadata.odds[oddId].bookmakerId]
+                .label
+            }}
+            | {{ eventsMetadata.odds[oddId].oddHomeTeam }} -
+            {{ eventsMetadata.odds[oddId].oddDraw ?? "x" }} -
+            {{ eventsMetadata.odds[oddId].oddAwayTeam }}
+          </div>
+        </mat-list-item>
+        <mat-divider style="margin: 8px"></mat-divider>
+      </div>
+    </mat-list>
+  </div>
+  <div *ngIf="eventsMetadata.numberEvents === 0">No events found</div>
+</div>

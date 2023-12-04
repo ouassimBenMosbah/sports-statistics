@@ -1,0 +1,38 @@
+.game-bonus-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-bottom: 16px;
+}
+
+mat-selection-list.selection-list {
+  max-height: calc(4 * 48px);
+  overflow-y: auto;
+}
+
+.card-content-description {
+  margin: 0;
+  padding: 8px 0px;
+}
+
+.user-choices {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}
+
+.user-choices-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.games-list {
+  width: fit-content;
+  max-width: 50%;
+}

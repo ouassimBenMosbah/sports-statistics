@@ -1,0 +1,17 @@
+div.list-container {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  padding-top: 12px;
+  width: 100%;
+}
+
+mat-selection-list.selection-list {
+  max-height: calc(4 * 48px);
+  overflow-y: auto;
+}
+
+.events-name {
+  margin-bottom: 8px;
+  font-weight: bold;
+}
